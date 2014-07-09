@@ -1,0 +1,10 @@
+* Copy Unique
+
+Only copy files which I don't already have.
+
+: copyunique <source> <dest>
+
+1. Build a list of filenames recursively throughout the <dest>
+2. Use this to compare the current file you are going to copy over from source
+3. If it doesn't exist anywhere in the <dest> then copy it to the base directory.
+

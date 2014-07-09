@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+SRC=ARGV[0]
+DEST=ARGV[1]
+
+destfiles = Hash.new()
+
+# Build a hash of the contents of DEST
+Dir.glob("#{DEST}/**/**").each do|f|
+  if File.file?(f)
+    destfiles[File.basename(f)] = f
+  end
+end
+
+# Copy from SRC
+Dir.glob("#{SRC}/**/**").each do|f|
+  if File.file?(f)
+    if destfiles[File.basename(f)].nil?
+      puts "Copy #{f} to #{DEST}"
+    else
+      puts "Don't copy #{f} -- duplicate exists #{destfiles[File.basename(f)]}"
+    end
+  end
+end
