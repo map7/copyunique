@@ -12,6 +12,7 @@ Dir.glob("#{DEST}/**/**").each do|f|
   end
 end
 
+
 # Copy from SRC
 Dir.glob("#{SRC}/**/**").each do|f|
   if File.file?(f)
