@@ -18,7 +18,7 @@ Dir.glob("#{SRC}/**/**").each do|f|
   if File.file?(f)
     if destfiles[File.basename(f)].nil?
       puts "Copy #{f} to #{DEST}"
-      `cp #{f} #{DEST}`
+      `cp "#{f}" "#{DEST}"`
     else
       puts "Don't copy #{f} -- duplicate exists #{destfiles[File.basename(f)]}"
     end
