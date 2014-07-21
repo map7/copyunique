@@ -20,7 +20,7 @@ Dir.glob("#{SRC}/**/**").each do|f|
       puts "Copy #{f} to #{DEST}"
 
       # -p = keep permissions
-      `cp -p #{f} #{DEST}`
+      `cp -p "#{f}" "#{DEST}"`
     else
       puts "Don't copy #{f} -- duplicate exists #{destfiles[File.basename(f)]}"
     end
