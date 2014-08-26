@@ -1,5 +1,10 @@
 * Copy Unique
+  
+** Installation
 
+: gem install sys-filesystem
+
+** Usage
 Only copy files which I don't already have.
 
 : copyunique <source> <dest>

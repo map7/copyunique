@@ -1,26 +1,54 @@
 #!/usr/bin/env ruby
+#
+# This program looks recursively through the destination directory
+# for the current filename you are copying from the source to see
+# if it already exists. If it doesn't then it copies it over.
+#
 
-SRC=ARGV[0]
-DEST=ARGV[1]
+require 'sys/filesystem'        
+include Sys
 
-destfiles = Hash.new()
+# Get arguments
+SRC=ARGV[0]                     # Source directory
+DEST=ARGV[1]                    # Destination directory
+MIN_SPACE=5                     # At least 5GB must be free
+
+if SRC.nil? || DEST.nil?
+  puts "copyunique <src> <dest>"
+  exit 0
+end
 
 # Build a hash of the contents of DEST
+destfiles = Hash.new()
 Dir.glob("#{DEST}/**/**").each do|f|
 
   # Add only files
   destfiles[File.basename(f)] = f if File.file?(f)
 end
 
-
 # Copy from SRC
 Dir.glob("#{SRC}/**/**").each do|f|
   if File.file?(f)
-    if destfiles[File.basename(f)].nil?
-      puts "Copy #{f} to #{DEST}"
-      `cp "#{f}" "#{DEST}"`
+    # Store the destination file
+    destfile = destfiles[File.basename(f)]
+
+    # Check space on dest filesystem
+    mount_point = Filesystem.mount_point(DEST)
+    stat= Filesystem.stat(mount_point) 
+    free_space = stat.block_size * stat.blocks_available / 1024 / 1024 / 1024 # Convert to GB
+    if free_space > MIN_SPACE          # Make sure we have more than our minimum free space available
+      # Check if we already have the destination file or if it's zero
+      if destfile.nil? || File.size(destfile) == 0
+
+        # Copy it across as we don't have it.
+        puts "Copy #{f} to #{DEST}"
+        `cp "#{f}" "#{DEST}"`
+      else
+        puts "Don't copy #{f} -- duplicate exists #{destfiles[File.basename(f)]}"
+      end
     else
-      puts "Don't copy #{f} -- duplicate exists #{destfiles[File.basename(f)]}"
+      puts "You have ran out of space on #{mount_point}"
+      exit 1
     end
   end
 end
